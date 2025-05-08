@@ -1,117 +1,95 @@
 public class Fraction {
-    private int chislitel;
-    private int znamenatel;
+	private int numerator;
+	private int denominator;
 
-    Fraction() {
-        this.chislitel = 0;
-        this.znamenatel = 1;
-    }
+	public Fraction() {
+		this(0, 1);
+	}
 
-    Fraction(int chislitel, int znamenatel) {
-        this.chislitel = chislitel;
-        this.znamenatel = znamenatel;
-    }
+	public Fraction(int numerator, int denominator) {
+		if (denominator == 0) {
+			throw new IllegalArgumentException("Denominator cannot be zero.");
+		}
+		this.numerator = numerator;
+		this.denominator = denominator;
+	}
 
-    Fraction(int chislitel) {
-        this(chislitel, 1);
-    }
+	Fraction(int numerator) {
+		this(numerator, 1);
+	}
 
-    int setChislitel(int chislitel) {
-        this.chislitel = chislitel;
-        return this.chislitel;
-    }
+	// Greatest Common Divisor
+	private int gcd(int a, int b) {
+		while (a != b) {
+			if (a > b) {
+				a -= b;
+			} else {
+				b -= a;
+			}
+		}
+		return a;
+	}
 
-    int setZnamenatel(int znamenatel) {
-        this.znamenatel = znamenatel;
-        return this.znamenatel;
-    }
+	private void reduce() {
+		int gcd = gcd(Math.abs(numerator), Math.abs(denominator));
+		numerator /= gcd;
+		denominator /= gcd;
 
-    int getChislitel() {
-        return this.chislitel;
-    }
+		if (denominator < 0) {
+			numerator = -numerator;
+			denominator = -denominator;
+		}
+	}
 
-    int getZnamenatel() {
-        return this.znamenatel;
-    }
+	public Fraction add(Fraction fraction) {
+		if (fraction.numerator == 0) {
+			return new Fraction(this.numerator, this.denominator);
+		} else {
+			int newNumerator = this.numerator * fraction.denominator + fraction.numerator * this.denominator;
+			int newDenominator = this.denominator * fraction.denominator;
+			Fraction result = new Fraction(newNumerator, newDenominator);
+			result.reduce();
+			return result;
+		}
+	}
 
-    // Находим наименьшее общее кратное
-    private int NOD(int a, int b) {
-        while (a != b) {
-            if (a > b) a -= b;
-            else b -= a;
-        }
-        return a;
-    }
+	public Fraction subtract(Fraction fraction) {
+		if (fraction.numerator == 0) {
+			return new Fraction(this.numerator, this.denominator);
+		} else {
+			int newNumerator = this.numerator * fraction.denominator - fraction.numerator * this.denominator;
+			int newDenominator = this.denominator * fraction.denominator;
+			Fraction result = new Fraction(newNumerator, newDenominator);
+			result.reduce();
+			return result;
+		}
+	}
 
-    // сокращаем дроби
-    private void sokr() {
-        int NOD = NOD(Math.abs(chislitel), Math.abs(znamenatel));
-        chislitel /= NOD;
-        znamenatel /= NOD;
+	public Fraction multiply(Fraction fraction) {
+		if (fraction.numerator == 0) {
+			return new Fraction(0, 1);
+		} else {
+			int newNumerator = this.numerator * fraction.numerator;
+			int newDenominator = this.denominator * fraction.denominator;
+			Fraction result = new Fraction(newNumerator, newDenominator);
+			result.reduce();
+			return result;
+		}
+	}
 
-        if (znamenatel < 0) {
-            chislitel = -chislitel;
-            znamenatel = -znamenatel;
-        }
-    }
+	public Fraction divide(Fraction fraction) {
+		if (fraction.numerator == 0) {
+			throw new ArithmeticException("Division by zero");
+		} else {
+			int newNumerator = this.numerator * fraction.denominator;
+			int newDenominator = this.denominator * fraction.numerator;
+			Fraction result = new Fraction(newNumerator, newDenominator);
+			result.reduce();
+			return result;
+		}
+	}
 
-
-    // сумма дробей
-    public Fraction summ(Fraction fraction) {
-        if (fraction.chislitel == 0) {
-            return new Fraction(this.chislitel, this.znamenatel);
-        } else {
-            int newChislitel = this.chislitel * fraction.znamenatel + fraction.chislitel * this.znamenatel;
-            int newZnamenatel = this.znamenatel * fraction.znamenatel;
-            Fraction result = new Fraction(newChislitel, newZnamenatel);
-            result.sokr();
-            return result;
-        }
-    }
-
-    // вычитание дробей
-    public Fraction vichet(Fraction fraction) {
-        if (fraction.chislitel == 0) {
-            return new Fraction(this.chislitel, this.znamenatel);
-        } else {
-            int newChislitel = this.chislitel * fraction.znamenatel - fraction.chislitel * this.znamenatel;
-            int newZnemenatel = this.znamenatel * fraction.znamenatel;
-            Fraction result = new Fraction(newChislitel, newZnemenatel);
-            result.sokr();
-            return result;
-        }
-    }
-
-    // умножение дробей
-    public Fraction umnozhenie(Fraction fraction) {
-        if (fraction.chislitel == 0) {
-            return new Fraction(0, 1);
-        } else {
-            int newChislitel = this.chislitel * fraction.chislitel;
-            int newZnamenatel = this.znamenatel * fraction.znamenatel;
-            Fraction result = new Fraction(newChislitel, newZnamenatel);
-            result.sokr();
-            return result;
-        }
-    }
-
-    // деление дробей
-    public Fraction del(Fraction fraction) {
-        if (fraction.chislitel == 0) {
-            return null;
-        } else {
-            int newChis = this.chislitel * fraction.znamenatel;
-            int newZnam = this.znamenatel * fraction.chislitel;
-            Fraction result = new Fraction(newChis, newZnam);
-            result.sokr();
-            return result;
-        }
-    }
-
-
-    public String toString() {
-        return chislitel + "/" + znamenatel;
-    }
+	public String toString() {
+		return numerator + "/" + denominator;
+	}
 }
-
-
