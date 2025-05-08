@@ -2,19 +2,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-
 public class Main {
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
 
-		/* Задание 1.1 */
 		System.out.println("Задание 1.1");
-
 		Point[] points = new Point[3];
 
-		// Ввод координат точек
 		for (int i = 0; i < 3; i++) {
-			double x = 0, y = 0;
+			double x, y;
 			while (true) {
 				System.out.print("Введите координаты точки " + (i + 1) + " (X Y): ");
 				if (in.hasNextDouble()) {
@@ -33,19 +29,13 @@ public class Main {
 				}
 			}
 		}
-
-		// Вывод информации о точках
 		for (int i = 0; i < 3; i++) {
 			System.out.println("Точка " + (i + 1) + ": " + points[i].getPointString());
 		}
 		System.out.println();
 
-
-
-		/* Задание 1.3 */
 		System.out.println("Задание 1.3");
 		System.out.print("Введите количество человек: ");
-
 		int personCount = 0;
 
 		while (personCount <= 0) {
@@ -61,7 +51,6 @@ public class Main {
 		}
 		in.nextLine();
 
-
 		Name[] names = new Name[personCount];
 		for (int i = 0; i < personCount; i++) {
 			System.out.print("Введите фамилию " + (i + 1) + "(чтобы пропустить нажмите Enter): ");
@@ -75,173 +64,118 @@ public class Main {
 			System.out.print("Введите отчество " + (i + 1) + "(чтобы пропустить нажмите Enter): ");
 			String lastName = in.nextLine().trim();
 			if (lastName.isEmpty()) lastName = null;
-			System.out.println();
-
 			names[i] = new Name(secondName, firstName, lastName);
-
 		}
 		for (Name name : names) {
 			System.out.println(name);
 		}
 
-
-
-		/* задание 2.1 */
 		System.out.println("Задание 2.1");
-		Point[] starts = new Point[2];
-		Point[] ends = new Point[2];
+		Line[] lines = new Line[3];
 
 		for (int i = 0; i < 2; i++) {
-			double x = 0, y = 0;
-			while (true) {
+			Point start = null, end = null;
+
+			while (start == null) {
 				System.out.print("Введите координаты начала " + (i + 1) + " линии (X Y): ");
 				if (in.hasNextDouble()) {
-					x = in.nextDouble();
-					if (in.hasNextDouble()) {
-						y = in.nextDouble();
-						starts[i] = new Point(x, y);
-						break;
-					} else {
-						System.out.println("Некорректный ввод. Пожалуйста, введите числа.");
-						in.nextLine();
-					}
-				} else {
-					System.out.println("Некорректный ввод. Пожалуйста, введите числа.");
-					in.nextLine();
-				}
+					double x = in.nextDouble();
+					if (in.hasNextDouble()) start = new Point(x, in.nextDouble());
+					else in.nextLine();
+				} else in.nextLine();
 			}
 
-			while (true) {
+			while (end == null) {
 				System.out.print("Введите координаты конца " + (i + 1) + " линии (X Y): ");
 				if (in.hasNextDouble()) {
-					x = in.nextDouble();
-					if (in.hasNextDouble()) {
-						y = in.nextDouble();
-						ends[i] = new Point(x, y);
-						break;
-					} else {
-						System.out.println("Некорректный ввод. Пожалуйста, введите числа.");
-						in.nextLine();
-					}
-				} else {
-					System.out.println("Некорректный ввод. Пожалуйста, введите числа.");
-					in.nextLine();
-				}
+					double x = in.nextDouble();
+					if (in.hasNextDouble()) end = new Point(x, in.nextDouble());
+					else in.nextLine();
+				} else in.nextLine();
 			}
+
+			lines[i] = new Line(start, end);
 		}
 
-		Line line1 = new Line(starts[0], ends[0]);
-		Line line2 = new Line(starts[1], ends[1]);
-		Line line3 = new Line(line1.getStart(), line2.getEnd());
+		lines[2] = new Line(lines[0].getStart(), lines[1].getEnd());
+		for (int i = 0; i < 3; i++)
+			System.out.println("Линия " + (i + 1) + ": " + lines[i].getLineString());
 
-		System.out.println(line1.getLineString());
-		System.out.println(line2.getLineString());
-		System.out.println(line3.getLineString());
-
-		// Изменение координат первой и второй линий
 		for (int i = 0; i < 2; i++) {
-			Line line;
-			if (i == 0) {
-				line = line1;
-			} else {
-				line = line2;
-			}
-			while (true) {
-				System.out.print("Введите новую координату X начала " + (i + 1) + " линии: ");
-				if (in.hasNextDouble()) {
-					line.getStart().setX(in.nextDouble());
-					break;
-				} else {
-					System.out.println("Некорректный ввод. Пожалуйста, введите число.");
-					in.nextLine();
+			System.out.println("Изменение линии " + (i + 1));
+			Line l = lines[i];
+			while(true) {
+				System.out.print("Введите новые X Y начала через пробел: ");
+				if(in.hasNextDouble()) {
+					double x = in.nextDouble();
+					if(in.hasNextDouble()) {
+						l.getStart().setX(x);
+						l.getStart().setY(in.nextDouble());
+						in.nextLine();
+						break;
+					}
 				}
+				System.out.println("Ошибка ввода! Нужно два числа через пробел");
+				in.nextLine();
 			}
-			while (true) {
-				System.out.print("Введите новую координату Y начала " + (i + 1) + " линии: ");
-				if (in.hasNextDouble()) {
-					line.getStart().setY(in.nextDouble());
-					break;
-				} else {
-					System.out.println("Некорректный ввод. Пожалуйста, введите число.");
-					in.nextLine();
-				}
-			}
-			while (true) {
-				System.out.print("Введите новую координату X конца " + (i + 1) + " линии: ");
-				if (in.hasNextDouble()) {
-					line.getEnd().setX(in.nextDouble());
-					break;
-				} else {
-					System.out.println("Некорректный ввод. Пожалуйста, введите число.");
-					in.nextLine();
-				}
-			}
-			while (true) {
-				System.out.print("Введите новую координату Y конца " + (i + 1) + " линии: ");
-				if (in.hasNextDouble()) {
-					line.getEnd().setY(in.nextDouble());
-					break;
-				} else {
-					System.out.println("Некорректный ввод. Пожалуйста, введите число.");
-					in.nextLine();
-				}
-			}
-		}
 
-		line3.setStart(line1.getStart());
-		line3.setEnd(line2.getEnd());
-
-		System.out.println(line1.getLineString());
-		System.out.println(line2.getLineString());
-		System.out.println(line3.getLineString());
-
-
-		// Изменение координат первой линии без изменения третьей линии
-		double newX1 = 0, newY1 = 0;
-		while (true) {
-			System.out.print("Введите новые координаты начала первой линии (X Y): ");
-			if (in.hasNextDouble()) {
-				newX1 = in.nextDouble();
-				if (in.hasNextDouble()) {
-					newY1 = in.nextDouble();
-					break;
-				} else {
-					System.out.println("Некорректный ввод. Пожалуйста, введите числа.");
-					in.nextLine();
+			while(true) {
+				System.out.print("Введите новые X Y конца через пробел: ");
+				if(in.hasNextDouble()) {
+					double x = in.nextDouble();
+					if(in.hasNextDouble()) {
+						l.getEnd().setX(x);
+						l.getEnd().setY(in.nextDouble());
+						in.nextLine();
+						break;
+					}
 				}
-			} else {
-				System.out.println("Некорректный ввод. Пожалуйста, введите числа.");
+				System.out.println("Ошибка ввода! Нужно два числа через пробел");
 				in.nextLine();
 			}
 		}
-		line1.setStart(new Point(newX1, newY1));
 
-		double newX2 = 0, newY2 = 0;
-		while (true) {
-			System.out.print("Введите новые координаты конца первой линии (X Y): ");
-			if (in.hasNextDouble()) {
-				newX2 = in.nextDouble();
-				if (in.hasNextDouble()) {
-					newY2 = in.nextDouble();
-					break;
+		System.out.println("Полное изменение первой линии:");
+		Point newStart = null, newEnd = null;
+		while(newStart == null) {
+			System.out.print("Введите X и Y начала через пробел: ");
+			if(in.hasNextDouble()) {
+				double x = in.nextDouble();
+				if(in.hasNextDouble()) {
+					newStart = new Point(x, in.nextDouble());
+					in.nextLine();
 				} else {
-					System.out.println("Некорректный ввод. Пожалуйста, введите числа.");
+					System.out.println("Некорректный ввод Y! Повторите ввод.");
 					in.nextLine();
 				}
 			} else {
-				System.out.println("Некорректный ввод. Пожалуйста, введите числа.");
+				System.out.println("Некорректный ввод! Введите два числа.");
 				in.nextLine();
 			}
 		}
-		line1.setEnd(new Point(newX2, newY2));
+		while(newEnd == null) {
+			System.out.print("Введите X и Y конца через пробел: ");
+			if(in.hasNextDouble()) {
+				double x = in.nextDouble();
+				if(in.hasNextDouble()) {
+					newEnd = new Point(x, in.nextDouble());
+					in.nextLine();
+				} else {
+					System.out.println("Некорректный ввод Y! Повторите ввод.");
+					in.nextLine();
+				}
+			} else {
+				System.out.println("Некорректный ввод! Введите два числа.");
+				in.nextLine();
+			}
+		}
+		lines[0].setStart(newStart);
+		lines[0].setEnd(newEnd);
 
-		System.out.println(line1.getLineString());
-		System.out.println(line2.getLineString());
-		System.out.println(line3.getLineString());
-		System.out.println();
+		for (int i = 0; i < 3; i++) {
+			System.out.println("Линия " + (i + 1) + ": " + lines[i].getLineString());
+		}
 
-
-		/* Задание 3.3 */
 		System.out.println("Задание 3.3");
 		City a = new City("A");
 		City b = new City("B");
@@ -276,7 +210,6 @@ public class Main {
 		System.out.println("\n" + e.getDescription());
 		System.out.println("\n" + f.getDescription());
 
-		/* Задание 4.8 */
 		System.out.println("Задание 4.8");
 		NewCity newCityA = new NewCity("A");
 
@@ -297,21 +230,19 @@ public class Main {
 		System.out.println("\n" + newCityC.getDescription());
 		System.out.println("\n" + newCityD.getDescription());
 
-		/* Задание 5.5 */
 		System.out.println("Задание 5.5 ");
 		System.out.println();
-
 		Fraction[] fractions = new Fraction[3];
 
 		for (int i = 0; i < 3; i++) {
 			while (true) {
 				System.out.print("Введите числитель и знаменатель для дроби " + (i + 1) + " : ");
 				if (in.hasNextInt()) {
-					int numerator  = in.nextInt();
+					int numerator = in.nextInt();
 					if (in.hasNextInt()) {
 						int denominator = in.nextInt();
 						if (denominator != 0) {
-							fractions[i] = new Fraction(numerator , denominator);
+							fractions[i] = new Fraction(numerator, denominator);
 							break;
 						} else {
 							System.out.println("Знаменатель не может быть равен 0. Попробуйте еще раз");
@@ -326,7 +257,6 @@ public class Main {
 				}
 			}
 		}
-
 		System.out.println("Результат: ");
 		Fraction result;
 
@@ -358,7 +288,6 @@ public class Main {
 		System.out.println(fractions[0] + " * " + fractions[2] + " = " + result);
 		System.out.println();
 
-
 		// f1.add(f2).divide(f3).subtract(5)
 		Fraction f4 = new Fraction(5);
 		System.out.println("Посчитать f1.sum(f2).div(f3).minus(5) ");
@@ -374,5 +303,4 @@ public class Main {
 		}
 		in.close();
 	}
-
 }
